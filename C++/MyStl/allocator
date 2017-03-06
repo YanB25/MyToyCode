@@ -1,0 +1,81 @@
+#ifndef _ALLOCATOR_
+#define _ALLOCATOR_
+
+#include "second_alloc"
+#include "stl_construct"
+#include "stl_trait"
+#include <new>
+#include <utility>
+namespace yb {
+
+	template <typename T>
+	class allocator {
+	public:
+		typedef _second_alloc alloc;
+		T* allocate(size_t n = 1) { return (T*)alloc::allocate(sizeof(T) * n); }
+		void deallocate(void* p, size_t n = 1) { alloc::deallocate(p, sizeof(T) * n); }
+		template <typename U> void construct(T* p, const U& value) { ::construct(p, value); }
+		template <typename ...Args> void construct(T* p, Args&& ...args) { ::construct(p, std::forward<Args>(args)...); }
+		void destroy(T* p) { ::destroy(p); }
+		allocator() = default;
+		template <typename U> allocator(const U& bad_alloc_handler) { _first_alloc::set_malloc_handler(bad_alloc_handler); }
+	};
+	
+	//below are some global functions
+	template <typename ForwardIterator, typename Size, typename T>
+	inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& value) {
+		return __uninitialized_fill_n(first, n, value, value_type(first));
+	}
+	
+	template <typename ForwardIterator, typename Size, typename T, typename U>
+	inline ForwardIterator __uninitialized_fill_n(ForwardIterator first, Size n, const T& value, U*) {
+		typedef typename __type_trait<U>::is_POD_type is_POD;
+		__uninitialized_fill_n_aux(first, n, value, is_POD());
+	}
+	
+	template <typename ForwardIterator, typename Size, typename T>
+	inline ForwardIterator __uninitialized_fill_n_aux(ForwardIterator first, Size n, const T& value, __true_type ) {
+		return std::fill_n(first, n, value);
+	}
+	
+	template <typename ForwardIterator, typename Size, typename T>
+	inline ForwardIterator __uninitialized_fill_n_aux(ForwardIterator first, Size n, const T& value, __false_type ) {
+		
+		ForwardIterator cur = first;
+		while (n--) {
+			construct(&*cur, value);
+			cur++;
+		}
+		return cur;
+	}
+	
+	template <typename InputIterator, typename ForwardIterator>
+	inline ForwardIterator __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator dest, __true_type) {
+		return std::copy(first, last, dest);
+	}
+	
+	template <typename InputIterator, typename ForwardIterator>
+	inline ForwardIterator __uninitialized_copy_aux(InputIterator first, InputIterator last, ForwardIterator dest, __false_type) {
+		ForwardIterator cur = dest;
+		for ( ; first != last; ++first, ++cur) {
+			construct(&*cur, *first);
+		}
+		return cur;
+	}
+	
+	template <typename InputIterator, typename ForwardIterator, typename T>
+	inline ForwardIterator __uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator dest, T*) {
+		typedef typename __type_trait<T>::is_POD_type is_POD;
+		__uninitialized_copy_aux(first, last, dest, is_POD());
+	}
+	
+	template <typename InputIterator, typename ForwardIterator>
+	inline ForwardIterator uninitialized_copy(InputIterator first, InputIterator last, ForwardIterator dest) {
+		return __uninitialized_copy(first, last, dest, value_type(first));
+	}
+	
+	
+			
+	
+}
+#endif

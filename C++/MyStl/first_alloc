@@ -1,0 +1,63 @@
+#ifndef _FIRST_ALLOC_
+#define _FIRST_ALLOC_
+
+#include <cstdlib>
+namespace yb {
+	class _first_alloc {
+	public:
+		static void* allocate(size_t n);
+		static void deallocate(void* p, size_t ) { free(p); }
+		static void* reallocate(void* p, size_t old_sz, size_t new_sz);
+		static auto set_malloc_handler(void (*f)()) -> void(*)() {
+			void (*old)() = _first_alloc_oom_handler;
+			_first_alloc_oom_handler = f;
+			return (old);
+		}
+	private:
+		//oom for out-of-memory
+		static void* oom_malloc(size_t);
+		static void* oom_realloc(void*, size_t);
+		//a function pointer to deal with oom
+		static void (*_first_alloc_oom_handler)();
+	};
+
+	void (*_first_alloc::_first_alloc_oom_handler)() = nullptr;
+
+	void* _first_alloc::allocate(size_t n) {
+		void* result = malloc(n);
+		if (result == nullptr) result = oom_malloc(n);
+		return result;
+	}
+
+	void* _first_alloc::reallocate(void* p, size_t /*old_sz*/, size_t new_sz) {
+		void* result = realloc(p, new_sz);
+		if (result == nullptr) result = oom_realloc(p, new_sz);
+		return result;
+	}
+
+
+	void* _first_alloc::oom_malloc(size_t n) {
+		void (*my_malloc_handler)();
+		void *result;
+		while (true) {
+			my_malloc_handler = _first_alloc_oom_handler;
+			if (my_malloc_handler == nullptr) { exit(1); }
+			my_malloc_handler();
+			result = malloc(n);
+			if (result != nullptr) { return result; }
+		}
+	}
+
+	void* _first_alloc::oom_realloc(void* p, size_t new_sz) {
+		void (*my_malloc_handler) ();
+		void* result;
+		while (true) {
+			my_malloc_handler = _first_alloc_oom_handler;
+			if (my_malloc_handler == nullptr) { exit(1); }
+			my_malloc_handler();
+			result = realloc(p, new_sz);
+			if (result != nullptr) { return result; }
+		}
+	}
+}
+#endif
