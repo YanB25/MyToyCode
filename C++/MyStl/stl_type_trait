@@ -1,0 +1,155 @@
+#ifndef _STL_TYPE_TRAIT_
+#define _STL_TYPE_TRAIT_
+#include "stl_debug"
+#include <cstddef>
+//below determine whether a type has a trival destruction
+//has_trival
+struct __false_type {};
+struct __true_type {};
+
+//POD means plain old data
+template <typename T>
+struct __type_trait {
+	typedef __false_type has_trival_constructor;
+	typedef __false_type has_trival_copy_constructor;
+	typedef __false_type has_trival_assignment_operator;
+	typedef __false_type has_trival_destructor;
+	typedef __false_type is_POD_type;
+};
+
+template <>
+struct __type_trait<char> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<signed char> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<unsigned char> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<short> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<unsigned short> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<int> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<unsigned int> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<long> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<unsigned long> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<float> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<double> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<long double> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<long long> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <>
+struct __type_trait<unsigned long long> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+template <typename T>
+struct __type_trait<T*> {
+	typedef __true_type has_trival_constructor;
+	typedef __true_type has_trival_copy_constructor;
+	typedef __true_type has_trival_assignment_operator;
+	typedef __true_type has_trival_destructor;
+	typedef __true_type is_POD_type;
+};
+
+#endif

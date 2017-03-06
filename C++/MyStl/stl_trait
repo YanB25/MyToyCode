@@ -1,0 +1,7 @@
+#ifndef _STL_TRAIT_
+#define _STL_TRAIT_
+
+#include "stl_iterator_trait"
+#include "stl_type_trait"
+
+#endif
