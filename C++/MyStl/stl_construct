@@ -1,0 +1,65 @@
+#ifndef _STL_CONSTRUCT_
+#define _STL_CONSTRUCT_
+#include <new>
+#include "stl_debug"
+#include "stl_trait"
+#include <iostream>
+#include <utility>
+using std::cout;
+	
+//todo: make it variadic
+//construct
+template <typename T, typename U>
+inline void construct(T* p, const U& value) {
+	DEBUG("construct (stl_construct)");
+	new (p) T(value);
+}
+
+template <typename T, typename ...Args>
+inline void construct(T* p, Args&& ...args) {
+	DEBUG("construct variadic template (stl_construct)");
+	new (p) T(std::forward<Args>(args)...);
+}
+
+//destroy for single pointer
+template <typename T>
+inline void destroy(T* p) {
+	DEBUG("destroy (stl_construct)");
+	typedef typename __type_trait<T>::has_trival_destructor trival_destructor;
+	_destroy_aux(p, trival_destructor());
+}
+
+template <typename T>
+inline void _destroy_aux(T* p, __false_type) { p->~T(); }
+template <typename T>
+inline void _destroy_aux(T* p, __true_type) { }
+
+//destroy aux function for pair 
+template <typename ForwardIterator>
+inline void __destroy_aux(ForwardIterator first, ForwardIterator last, __true_type()) { }
+template <typename ForwardIterator>
+inline void __destroy_aux(ForwardIterator first, ForwardIterator last, __false_type()) {
+	for(; first != last; ++first) {
+		destroy(&(*first));
+	}
+}
+
+//temp function to deside the type
+template<typename ForwardIterator, typename T>
+inline void __destroy(ForwardIterator first, ForwardIterator last, T*) {
+	typedef typename __type_trait<T>::has_trival_destructor trival_destructor;
+	__destroy_aux(first, last, trival_destructor());
+}
+
+//destroy for iterator
+template <typename ForwardIterator>
+inline void destroy(ForwardIterator first, ForwardIterator last) {
+	__destroy(first, last, value_type(first));
+}
+
+//instancialization destroy for pointer
+inline void destroy(char*, char*) { }
+
+
+
+#endif
