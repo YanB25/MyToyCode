@@ -1,0 +1,15 @@
+#ifndef _STL_DEBUG_
+#define _STL_DEBUG_
+#define _DEBUG_
+#include <string>
+using std::string;
+#include <iostream>
+using std::cout;
+using std::endl;
+
+	#ifdef _DEBUG_
+		inline void DEBUG(const string& s) { cout << s << endl; }
+	#else
+		inline void DEBUG(const string& s) { /* do nothing */ }
+	#endif
+#endif
