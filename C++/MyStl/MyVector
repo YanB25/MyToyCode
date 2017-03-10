@@ -26,6 +26,9 @@ public:
 	size_type capacity() const { return end_of_storage - start; }
 	bool empty() const { return size() == 0; }
 	reference operator[](size_type n) { return *(start + n); }
+	void push_back(const value_type& x);
+	void pop_back();
+	iterator erase(iterator position);
 	
 	//constructor
 	vector() : start(nullptr), finish(nullptr), end_of_storage(nullptr) { }
@@ -39,6 +42,7 @@ protected:
 	void _insert_aux(iterator position, const T& value);
 	void _deallocate() { if (start) alloc.deallocate(start, end_of_storage - start); }
 	void _fill_initialize(size_type n, const T& value);
+	void insert_aux(iterator, value_type);//todo:
 	
 };
 template <typename T, typename Alloc>
@@ -48,6 +52,32 @@ template <typename T, typename Alloc>
 void vector<T, Alloc>::_fill_initialize(size_type n, const T& value) {
 	start = _allocate_n_fill(n, value);
 	end_of_storage = finish = start + n;
+}
+
+template<typename T>
+void vector<T>::push_back(const value_type& x) {
+	if (finish != end_of_storage) {
+		construct(finish, x);
+		++finish;
+	} else {
+		insert_aux(end(), x);
+	}
+}
+
+template <typename T>
+void vector<T>::pop_back() {
+	--finish;
+	destroy(finish);
+}
+
+template <typename T>
+iterator vector<T>::erase(iterator position) {
+	if (position + 1 != end()) {
+		copy(position + 1, finish, position);
+		finish--;
+		destroy(finish);
+		return position;
+	}
 }
 
 #endif

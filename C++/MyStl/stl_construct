@@ -21,7 +21,7 @@ inline void construct(T* p, Args&& ...args) {
 	new (p) T(std::forward<Args>(args)...);
 }
 
-//destroy for single pointer
+// for single pointer
 template <typename T>
 inline void destroy(T* p) {
 	DEBUG("destroy (stl_construct)");
