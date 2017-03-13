@@ -54,8 +54,8 @@ void vector<T, Alloc>::_fill_initialize(size_type n, const T& value) {
 	end_of_storage = finish = start + n;
 }
 
-template<typename T>
-void vector<T>::push_back(const value_type& x) {
+template<typename T, typename Alloc>
+void vector<T, Alloc>::push_back(const value_type& x) {
 	if (finish != end_of_storage) {
 		construct(finish, x);
 		++finish;
@@ -64,14 +64,14 @@ void vector<T>::push_back(const value_type& x) {
 	}
 }
 
-template <typename T>
-void vector<T>::pop_back() {
+template <typename T, typename Alloc>
+void vector<T, Alloc>::pop_back() {
 	--finish;
 	destroy(finish);
 }
 
-template <typename T>
-iterator vector<T>::erase(iterator position) {
+template <typename T, typename Alloc>
+typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator position) {
 	if (position + 1 != end()) {
 		copy(position + 1, finish, position);
 		finish--;
