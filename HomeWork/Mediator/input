@@ -1,0 +1,90 @@
+4
+linjian0 100
+5
+Dress_Blue 10
+Silk_stockings_Black 10
+Sailor_suit_Blue 10
+Nurse_suit_Blue 10
+Apron_dress_Blue 10
+linjian1 100
+5
+Dress_Blue 10
+Silk_stockings_Hollow 10
+Sailor_suit_Pink 10
+Nurse_suit_Pink 10
+Apron_dress_Pink 10
+linjian2 100
+5
+Dress_Yellow 10
+Silk_stockings_Yellow 10
+Sailor_suit_Yellow 10
+Nurse_suit_Yellow 10
+Apron_dress_Yellow 10
++CLitleSister 100
+5
+Dress_Fleshcolor 10
+Silk_stockings_Fleshcolor 10
+Sailor_suit_Fleshcolor 10
+Nurse_suit_Fleshcolor 10
+Apron_dress_Fleshcolor 10
+2 d
+1
+0 b
+Silk_stockings_Black 12 2
+2 d
+0
+3 s
+1 Suppose there is a sentence
+2 d
+0
+1 b
+Dress_Blue 17 3
+1 b
+Silk_stockings_Yellow 5 3
+1 d
+2
+1 s
+2 Suppose there is a sentence
+3 b
+Dress 18 2
+2 b
+Sailor_suit_Yellow 14 1
+3 s
+1 Suppose there is a sentence
+1 d
+2
+0 b
+Silk_stockings_Black 5 2
+3 b
+Apron_dress_Yellow 10 0
+1 s
+2 Suppose there is a sentence
+2 b
+Apron_dress_Blue 18 0
+2 d
+0
+0 s
+2 Suppose there is a sentence
+0 d
+2
+3 s
+0 Suppose there is a sentence
+1 b
+Sailor_suit_Blue 20 3
+1 s
+3 Suppose there is a sentence
+3 s
+1 Suppose there is a sentence
+2 s
+0 Suppose there is a sentence
+1 b
+Apron_dress_Blue 17 2
+0 d
+3
+1 b
+Nurse_suit_Yellow 13 3
+1 d
+2
+2 s
+1 Suppose there is a sentence
+-1

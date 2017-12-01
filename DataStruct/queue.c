@@ -6,7 +6,7 @@ typedef struct Node
 	int data;
 	struct Node* next;
 }Node;
-
+	
 int size = 0;
 Node* head = NULL;
 
@@ -65,6 +65,7 @@ void show()
 
 int main()
 {
+
 	printf("Enter order, a (data) to push, d to pos, s to show\n");
 	while(true)
 	{

@@ -12,7 +12,7 @@ void Print(Obj* arr, int n);
 int main()
 {
 	freopen("input", "r", stdin);
-	int n;
+	int hn;
 	scanf("%d", &n);
 	Obj* arr = (Obj*) malloc(sizeof(Obj) * n);
 	for (int i = 0; i < n; ++i) scanf("%d %d", &arr[i].data, &arr[i].id);

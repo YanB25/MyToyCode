@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+//int binarySearch(int* arr, int beg, int end, int tar) {
+//    if (beg == end) return arr[beg] == tar ? beg : -1;
+//    int mid = (end + beg) / 2;
+//    if (arr[mid] < tar) {
+//        return binarySearch(arr, mid + 1, end, tar);
+//    } else {
+//        return binarySearch(arr, beg, mid, tar);
+//    }
+//}
+
+int binarySearch(int* arr, int beg, int end, int tar) {
+    cout << beg << " " << end << endl;
+    if (beg == end) return arr[beg] == tar ? beg : -1;
+    int mid = (end + beg + 1) / 2;
+    if (arr[mid] > tar) {
+        return binarySearch(arr, beg, mid-1, tar);
+    } else {
+        return binarySearch(arr, beg, mid, tar);
+    }
+}
+
+int main() {
+    int arr[] = {1,1,1,1,1,1,1,1,2,2,2,2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4};
+    for (int i = 0; i < 7; ++i) {
+        cout << binarySearch(arr, 0, sizeof(arr) / sizeof(int), i) << endl;
+    }
+}

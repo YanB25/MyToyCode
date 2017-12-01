@@ -1,0 +1,138 @@
+#include <iostream>
+using namespace std;
+struct Node {
+    Node* next;
+    int data;
+    Node(int d, Node* n = nullptr) {
+        data = d;
+        next = n;
+    }
+};
+class List {
+public:
+    List();
+    ~List();
+    void clear();
+    void insert(int pos, int data);
+    void remove(int pos);
+    void mergeSort();
+    bool empty() const;
+    void print() const;
+private:
+    Node* head_;
+    Node* mergeSort_(Node*);
+    Node* merge(Node*, Node* )
+};
+List::List() : head_(nullptr) {}
+List::~List() {
+    clear();
+}
+void List::clear() {
+    while (!empty()) {
+        remove(0);
+    }
+}
+bool List::empty() const { return head_ == nullptr; }
+void List::insert(int pos, int data) {
+    if (pos < 0) return;
+    if (pos == 0) {
+        Node* new_node = new Node(data, head_);
+        head_ = new_node;
+    } else {
+        Node* prev = head_;
+        while (--pos) prev = prev->next;
+        Node* new_node = new Node(data, prev->next);
+        prev->next = new_node;
+    }
+}
+void List::remove(int pos) {
+    if (pos < 0) return;
+    if (pos == 0) {
+        Node* tar = head_;
+        head_ = head_->next;
+        delete tar;
+    } else {
+        Node* prev = head_;
+        while (--pos) prev = prev->next;
+        Node* tar = prev->next;
+        prev->next = tar->next;
+        delete tar;
+    }
+}
+void List::mergeSort() {
+    if (head_)
+        head_ = mergeSort_(head_);
+}
+Node* List::findMid(Node* node) {
+    if (node == nullptr) return nullptr;
+    Node* first = node;
+    Node* second = node->next;
+    while (first->next && first->next->next) {
+        first = first->next->next;
+        second = second->next;
+    }
+    Node* ret = second->next;
+    second->next = nullptr;
+    return ret;
+}
+Node* List::mergeSort_(Node* node) {
+    Node* first = node;
+    Node* second = findMid(first);
+    mergeSort_(first);
+    mergeSort_(second);
+    return merge(first, second);
+}
+Node* List::merge(Node* lhs, Node* rhs) {
+    Node* head = new Node(0);
+    Node* cur = head;
+    while (lhs != nullptr && rhs != nullptr) {
+        if (lhs->data <= rhs->data) {
+            cur->next = lhs;
+            cur = head->next;
+            lhs = rhs->next;
+        } else {
+            cur->next = rhs;
+            cur = head->next;
+            rhs = rhs->next;
+        }
+    }
+    if (lhs) {
+        cur->next = lhs;
+        cur = head->next;
+    }
+    if (rhs) {
+        cur->next = rhs;
+        cur = head->next;
+    }
+    Node* tar = head;
+    head = head->next;
+    delete tar;
+    return head;
+}
+
+void List::print() const {
+    Node* cur = head_;
+    while (cur) {
+        cout << cur->data << " ";
+        cur = cur->next;
+    }
+    cout << endl;
+}
+int main() {
+    List ls;
+    for (int i = 0; i < 10; ++i) {
+        ls.insert(0, i);
+        ls.print();
+    } 
+    cout << endl;
+    for (int i = 0; i < 5; ++i) {
+        ls.insert(3, i);
+        ls.print();
+    }
+    cout << endl;
+    for (int i = 0; i < 5; ++i) {
+        ls.remove(3);
+        ls.print();
+    }
+    return 0;
+}

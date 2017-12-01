@@ -1,11 +1,10 @@
-int add(int lhs, int rhs) {
-	return lhs + rhs;
-}
-double add(double lhs, double rhs) {
-	return lhs + rhs;
-}
+
 
 int main() {
-	int a;
+	signed char sc = 1;
+	long l = 2;
+	signed char* sp = &sc;
+	long* dp = &l;
+	*dp = (long) *sp;
 	return 0;
 }
