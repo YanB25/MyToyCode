@@ -1,5 +1,7 @@
 #include <iostream>
-using namespace std;
+using std::cerr;
+using std::cout;
+using std::endl;
 enum balance_factor { eq, lh, rh };
 template <typename Entry>
 struct avlNode {
@@ -31,6 +33,9 @@ private:
     avlNode<Entry>* left_balance(avlNode<Entry>*);
     avlNode<Entry>* right_balance(avlNode<Entry>*);
     avlNode<Entry>* removeNode(avlNode<Entry>*, const Entry&, bool&);
+    avlNode<Entry>* delete_left(avlNode<Entry>*, bool&);
+    avlNode<Entry>* delete_right(avlNode<Entry>*, bool&);
+    avlNode<Entry>* getSucc(avlNode<Entry>*, avlNode<Entry>**);
 };
 template <typename Entry>
 avlTree<Entry>::~avlTree() {
@@ -200,19 +205,162 @@ void avlTree<Entry>::remove(const Entry& entry) {
     bool shorter = true;
     root_ = removeNode(root_, entry, shorter);
 }
-
+template <typename Entry>
+avlNode<Entry>* avlTree<Entry>::removeNode(avlNode<Entry>* node, const Entry& entry, bool& shorter) {
+    if (node == nullptr) return nullptr;
+    if (node->entry > entry) {
+        node->left = removeNode(node->left, entry, shorter);
+        if (shorter) node = delete_left(node, shorter);
+    } else if (node->entry < entry) {
+        node->right = removeNode(node->right, entry, shorter);
+        if (shorter) node = delete_right(node, shorter);
+    } else {
+        if (node->left == nullptr) {
+            avlNode<Entry>* ret = node->right;
+            shorter = true;
+            delete node;
+            return ret;
+        } else if (node->right == nullptr) {
+            avlNode<Entry>* ret = node->left;
+            shorter = true;
+            delete node;
+            return ret;
+        } else {
+            avlNode<Entry>* succ = nullptr;
+            node->right = getSucc(node->right, &succ);
+            succ->left = node->left;
+            succ->right = node->right;
+            delete node;
+            return succ;
+        }
+    }
+    return node;
+}
+template <typename Entry>
+avlNode<Entry>* avlTree<Entry>::getSucc(avlNode<Entry>* node, avlNode<Entry>** ans) {
+    if (node->left) {
+        node->left = getSucc(node->left, ans);
+    } else {
+        *ans = node;
+        return node->right;
+    }
+    return node;
+}
+template <typename Entry>
+avlNode<Entry>* avlTree<Entry>::delete_left(avlNode<Entry>* node, bool& shorter) {
+    switch(node->bf) {
+        case eq:
+            shorter = false;
+            node->bf = rh;
+            break;
+        case lh:
+            node->bf = eq;
+            break;
+        case rh:
+            avlNode<Entry>* right = node->right;
+            switch(right->bf) {
+                case rh:
+                    node->bf = eq;
+                    right->bf = eq;
+                    node = rotate_left(node);
+                    shorter = false;
+                    break;
+                case eq:
+                    node->bf = rh;
+                    right->bf = lh;
+                    node = rotate_left(node);
+                    break;
+                case lh:
+                    avlNode<Entry>* rleft = right->left;
+                    switch(rleft->bf) {
+                        case eq:
+                            node->bf = eq;
+                            right->bf = eq;
+                            break;
+                        case lh:
+                            node->bf = eq;
+                            right->bf = rh;
+                            break;
+                        case rh:
+                            node->bf = lh;
+                            right->bf = eq;
+                            break;
+                    }
+                    rleft->bf = eq;
+                    right = rotate_right(right);
+                    node = rotate_left(node);
+            }
+    }
+    return node;
+}
+template <typename Entry>
+avlNode<Entry>* avlTree<Entry>::delete_right(avlNode<Entry>* node, bool& shorter) {
+    switch(node->bf) {
+        case eq:
+            node->bf = lh;
+            shorter = false;
+            break;
+        case rh:
+            node->bf = eq;
+            break;
+        case lh:
+            avlNode<Entry>* left = node->left;
+            switch(left->bf) {
+                case eq:
+                    node->bf = lh;
+                    left->bf = rh;
+                    node = rotate_right(node);
+                    break;
+                case lh:
+                    node->bf = eq;
+                    left->bf = eq;
+                    node = rotate_right(node);
+                    shorter = false;
+                    break;
+                case rh:
+                    avlNode<Entry>* lright = left->right;
+                    switch(lright->bf) {
+                        case eq:
+                            node->bf = eq;
+                            lright->bf = eq;
+                            break;
+                        case lh:
+                            node->bf = rh;
+                            left->bf = eq;
+                            break;
+                        case rh:
+                            node->bf = eq;
+                            left->bf = lh;
+                            break;
+                    }
+                    lright->bf = eq;
+                    left = rotate_left(left);
+                    node = rotate_right(node);
+            }
+    }
+    return node;
+}
 int main() {
     avlTree<int> tree;
-    for (int i = 10; i >= 0; --i) {
+    cout << "insert " << endl;
+    for (int i = 0; i < 5; ++i) {
         tree.insert(i);
         tree.print();
     }
-    for (int i = 11; i <= 20; ++i) {
-        tree.insert(i);
+    cout << "remove " << endl;
+    for (int i = 5; i >= 2; --i) {
+        tree.remove(i);
         tree.print();
     }
-    for (int i = 0; i >= -5; --i) {
-        tree.insert(i);
-        tree.print();
-    }
+//    cout << "insert " << endl;
+//    for (int i = -4; i <= 0; ++i) {
+//        tree.insert(i);
+//        tree.print();
+//    }
+//    cout << "remove " << endl;
+//    for (int i = -3; i <= 4; ++i) {
+//        tree.remove(i);
+//        tree.print();
+//    }
+//    
 }
