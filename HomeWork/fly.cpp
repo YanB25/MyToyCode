@@ -4,9 +4,12 @@
 #include <vector>
 #include <queue>
 using namespace std;
+int deltaX[] = {1, 0, -1, 0}; //r, d, l, u
+int deltaY[] = {0, 1, 0, -1};
 int m, n, D;
 vector<string> map;
 vector<vector<int>> rmax;
+bool hasVisited[110][110][110] = {};
 struct State {
     int x;
     int y;
@@ -19,8 +22,18 @@ struct State {
         cnt = c_;
     }
 };
-bool isLand(int x, int y) {
-    return map[y][x] == 'P';
+bool isLand(int x, int y, int r) {
+    if ( x >= 0
+        && x <= n-1
+        && y >= 0
+        && y <= m-1
+        && map[y][x] == 'P'
+        && !hasVisited[y][x][r]) {
+            hasVisited[y][x][r] = true;
+            return true;
+        } else {
+            return false;
+        }
 }
 int Solution() {
     int dx = n-1, dy = m-1;
@@ -32,37 +45,24 @@ int Solution() {
         State s = q.front(); q.pop();
         int x = s.x; int y = s.y; int remains = s.remains; int cnt = s.cnt;
         if (x == dx && y == dy) return cnt;
-        if (remains < rmax[y][x]) continue;
-        rmax[y][x] = remains;
-        #ifdef DEBUG
-        //cout << "x y r c " << x << " " << y << " " << remains << " " << cnt << endl;
-        #endif
 
-        for (int flydst = 2; flydst <= remains; ++flydst) {
-            if (x + flydst <= dx && isLand(x+flydst, y)) {
-                q.push(State(x+flydst, y,remains-flydst, cnt+1));
+        for (int i = 0; i < 4; ++i) {
+            for (int flydst = 2; flydst <= remains; ++flydst) {
+                int newx = x + deltaX[i] * flydst;
+                int newy = y + deltaY[i] * flydst;
+                if (isLand(newx, newy, remains-flydst)) {
+                    q.push(State(newx, newy, remains - flydst, cnt + 1));
+                    #ifdef DEBUG
+                    cout << "x y r c " << newx << " " << newy << " " << remains-flydst << " " << cnt+1 << endl;
+                    #endif
+                }
             }
-            if (x - flydst >= 0 && isLand(x-flydst, y)) {
-                q.push(State(x-flydst, y, remains-flydst, cnt+1));
+            if (isLand(x + deltaX[i], y + deltaY[i], remains)) {
+                q.push(State(x + deltaX[i], y + deltaY[i], remains, cnt + 1));
+                #ifdef DEBUG
+                cout << "x y r c " << x+deltaX[i] << " " << y+deltaY[i] << " " << remains << " " << cnt+1 << endl;
+                #endif
             }
-            if (y + flydst <= dy && isLand(x, y+flydst)) {
-                q.push(State(x, y+flydst, remains-flydst, cnt+1));
-            }
-            if (y - flydst >= 0 && isLand(x, y-flydst)) {
-                q.push(State(x, y-flydst, remains-flydst, cnt+1));
-            }
-        }
-        if (x + 1 <= dx && isLand(x+1, y)) {
-            q.push(State(x+1, y,remains, cnt+1));
-        }
-        if (x - 1 >= 0 && isLand(x-1, y)) {
-            q.push(State(x-1, y, remains, cnt+1));
-        }
-        if (y + 1 <= dy && isLand(x, y+1)) {
-            q.push(State(x, y+1, remains, cnt+1));
-        }
-        if (y - 1 >= 0 && isLand(x, y-1)) {
-            q.push(State(x, y-1, remains, cnt+1));
         }
     }
 }
@@ -72,12 +72,16 @@ int main() {
     #endif
     cin >> m >> n >> D;
     rmax.resize(m);
-    for (auto& v : rmax) v.resize(n, INT_MIN/10);
+    for (auto& v : rmax) v.resize(n, -1);
     for (int i = 0; i < m; ++i) {
         string s;
         cin >> s;
         map.push_back(s);
     }
     int cnt = Solution();
-    cout << cnt << endl;
+    if (cnt == -1) {
+        cout << "impossible" << endl;
+    } else {
+        cout << cnt << endl;
+    }
 }
