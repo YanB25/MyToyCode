@@ -1,4 +1,4 @@
-*.out
-*.s
+**/*.out
+**/*.s
 .vscode
 *out*
